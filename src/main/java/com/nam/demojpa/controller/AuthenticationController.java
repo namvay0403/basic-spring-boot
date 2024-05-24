@@ -5,6 +5,7 @@ import com.nam.demojpa.dto.reponse.IntrospectResponse;
 import com.nam.demojpa.dto.request.ApiResponse;
 import com.nam.demojpa.dto.request.AuthenticationRequest;
 import com.nam.demojpa.dto.request.IntrospectRequest;
+import com.nam.demojpa.dto.request.LogoutRequest;
 import com.nam.demojpa.service.AuthenticationService;
 import com.nimbusds.jose.JOSEException;
 import lombok.RequiredArgsConstructor;
@@ -35,4 +36,11 @@ public class AuthenticationController {
         var result = authenticationService.introspectResponse(request);
         return ApiResponse.<IntrospectResponse>builder().result(result).build();
     }
+
+    @PostMapping("/logout")
+    public ApiResponse<Void> logout(@RequestBody LogoutRequest request) throws ParseException, JOSEException {
+        authenticationService.logOut(request);
+        return ApiResponse.<Void>builder().build();
+    }
+
 }
