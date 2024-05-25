@@ -12,7 +12,7 @@ public class UserCreationRequest {
     @Size(min = 6, message = "USERNAME_INVALID")
      private String username;
 
-    @Size(min = 8, message = "PASSWORD_INVALID")
+    @Size(min = 6, message = "PASSWORD_INVALID")
     private String password;
     private String firstName;
     private String lastName;
@@ -28,11 +28,11 @@ public class UserCreationRequest {
         this.username = username;
     }
 
-    public @Size(min = 8, message = "PASSWORD_INVALID") String getPassword() {
+    public @Size(min = 6, message = "PASSWORD_INVALID") String getPassword() {
         return password;
     }
 
-    public void setPassword(@Size(min = 8, message = "PASSWORD_INVALID") String password) {
+    public void setPassword(@Size(min = 6, message = "PASSWORD_INVALID") String password) {
         this.password = password;
     }
 
