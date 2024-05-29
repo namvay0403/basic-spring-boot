@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.2.5'
 	id 'io.spring.dependency-management' version '1.1.4'
+	id "jacoco"
 }
 
 group = 'com.nam'
@@ -22,17 +23,72 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.mapstruct:mapstruct:1.5.5.Final'
 	implementation 'com.nimbusds:nimbus-jose-jwt:9.10'
+	implementation 'org.springframework.security:spring-security-test'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
  	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
 	compileOnly 'org.projectlombok:lombok:1.18.32'
 	annotationProcessor 'org.projectlombok:lombok:1.18.32'
 
+	testImplementation group: 'com.h2database', name: 'h2', version: '2.2.224'
+	implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.17.1'
 	testCompileOnly 'org.projectlombok:lombok:1.18.32'
 	testAnnotationProcessor 'org.projectlombok:lombok:1.18.32'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+test {
+	useJUnitPlatform()
+	finalizedBy jacocoTestReport
+}
+
+jacoco{
+	toolVersion = "0.8.11"
+}
+
+jacocoTestReport {
+	reports {
+		xml.required.set(true)
+		csv.required.set(false)
+		html.outputLocation.set(layout.buildDirectory.dir('jacocoHtml'))
+	}
+	afterEvaluate {
+		classDirectories.setFrom(
+				files(classDirectories.files.collect {
+					fileTree(dir: it, exclude: [
+							'com/nam/demojpa/entity/**',  // Exclude all classes in this package
+							'com/nam/demojpa/dto/**'  // Exclude a specific class
+					])
+				})
+		)
+	}
+}
+
+jacocoTestCoverageVerification {
+	violationRules {
+		rule {
+			limit {
+				minimum = 0.8 // Set your desired minimum coverage percentage
+			}
+		}
+	}
+	afterEvaluate {
+		classDirectories.setFrom(
+				files(classDirectories.files.collect {
+					fileTree(dir: it, exclude: [
+							'com/nam/demojpa/entity/**',  // Exclude all classes in this package
+							'com/nam/demojpa/dto/**'   // Exclude a specific class
+					])
+				})
+		)
+	}
+}
+
+check.dependsOn jacocoTestReport
+
