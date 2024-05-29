@@ -40,13 +40,16 @@ public class UserService {
   RoleRepository roleRepository;
 
   public UserResponse createUser(UserCreationRequest request) {
+    log.info("In method create User");
     if (userRepository.existsByUsername(request.getUsername())) {
       throw new AppException(ErrorCode.USER_EXISTED);
     }
     User user = userMapper.toUser(request);
     user.setPassword(passwordEncoder.encode(request.getPassword()));
+    com.nam.demojpa.entity.Role role = new com.nam.demojpa.entity.Role();
     HashSet<com.nam.demojpa.entity.Role> roles = new HashSet<>();
-//    roles.add(Role.USER.name());
+    role.setName(Role.USER.name());
+    roles.add(role);
     user.setRoles(roles);
     return userMapper.toUserResponse(userRepository.save(user));
   }

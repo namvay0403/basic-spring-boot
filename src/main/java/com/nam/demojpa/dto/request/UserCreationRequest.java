@@ -7,7 +7,6 @@ import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
 
-
 public class UserCreationRequest {
     @Size(min = 6, message = "USERNAME_INVALID")
      private String username;
